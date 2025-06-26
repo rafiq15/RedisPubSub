@@ -51,4 +51,4 @@ This project demonstrates a simple messaging application using **Spring Boot**, 
 
 ## License
 
-This project is for educational purposes. All code is provided AI-generated.
+This project is for educational purposes. All code is AI-generated.
