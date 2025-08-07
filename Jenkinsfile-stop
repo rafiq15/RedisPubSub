@@ -1,0 +1,98 @@
+pipeline {
+    agent any
+    
+    environment {
+        COMPOSE_PROJECT_NAME = 'redis-pubsub'
+    }
+    
+    stages {
+        stage('Stop Application') {
+            steps {
+                script {
+                    echo "Stopping Redis Pub/Sub Application..."
+                    
+                    if (isUnix()) {
+                        sh '''
+                            echo "Stopping containers..."
+                            docker-compose down || true
+                            
+                            echo "Removing any dangling containers..."
+                            docker ps -a | grep redis-pubsub || true
+                            
+                            echo "Application stopped successfully!"
+                        '''
+                    } else {
+                        bat '''
+                            echo Stopping containers...
+                            docker-compose down || echo "No containers to stop"
+                            
+                            echo Checking for any remaining containers...
+                            docker ps -a | findstr redis-pubsub || echo "No containers found"
+                            
+                            echo Application stopped successfully!
+                        '''
+                    }
+                }
+            }
+        }
+        
+        stage('Cleanup (Optional)') {
+            when {
+                expression { params.FULL_CLEANUP == true }
+            }
+            steps {
+                script {
+                    echo "Performing full cleanup..."
+                    
+                    if (isUnix()) {
+                        sh '''
+                            echo "Removing volumes (this will delete Redis data)..."
+                            docker-compose down -v || true
+                            
+                            echo "Removing unused images..."
+                            docker image prune -f || true
+                            
+                            echo "Full cleanup completed!"
+                        '''
+                    } else {
+                        bat '''
+                            echo Removing volumes (this will delete Redis data)...
+                            docker-compose down -v || echo "No volumes to remove"
+                            
+                            echo Removing unused images...
+                            docker image prune -f || echo "No images to remove"
+                            
+                            echo Full cleanup completed!
+                        '''
+                    }
+                }
+            }
+        }
+    }
+    
+    parameters {
+        booleanParam(
+            name: 'FULL_CLEANUP',
+            defaultValue: false,
+            description: 'Perform full cleanup including volumes and unused images (WARNING: This will delete Redis data)'
+        )
+    }
+    
+    post {
+        always {
+            script {
+                if (isUnix()) {
+                    sh 'docker ps -a | grep redis-pubsub || echo "No Redis Pub/Sub containers running"'
+                } else {
+                    bat 'docker ps -a | findstr redis-pubsub || echo "No Redis Pub/Sub containers running"'
+                }
+            }
+        }
+        success {
+            echo "✅ Application stopped successfully!"
+        }
+        failure {
+            echo "❌ Failed to stop application. Check logs for details."
+        }
+    }
+}
