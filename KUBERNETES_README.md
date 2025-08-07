@@ -1,5 +1,17 @@
 # Redis Pub/Sub Kubernetes Deployment
 
+## 📋 Table of Contents
+
+- [Overview](#overview)
+- [Quick Start](#-quick-start)
+- [Project Structure](#-project-structure)
+- [Environment Configurations](#environment-configurations)
+- [Advanced Deployment](#advanced-deployment)
+- [Monitoring and Maintenance](#monitoring-and-maintenance)
+- [Troubleshooting](#troubleshooting)
+
+## Overview
+
 This repository contains a comprehensive Kubernetes deployment setup for the Redis Pub/Sub application with both development and production configurations.
 
 ## 🚀 Quick Start
@@ -218,3 +230,18 @@ scripts\cleanup.bat
 3. Use `scripts\port-forward.bat` to access the application
 4. View logs with `scripts\deploy.ps1 logs`
 5. Clean up with `scripts\cleanup.bat` when done
+
+## Related Deployment Guides
+
+- **[Docker Deployment](DOCKER_DEPLOYMENT_GUIDE.md)** - For simpler containerized deployments and local development
+- **[Jenkins CI/CD Pipeline](JENKINS_DEPLOYMENT_GUIDE.md)** - For automated Kubernetes deployments and GitOps workflows
+- **[Main README](README.md)** - Overview and local development setup
+
+## Next Steps
+
+1. **Customize configurations**: Edit the all-in-one.yaml files for your specific needs
+2. **Set up monitoring**: Add Prometheus/Grafana for production monitoring
+3. **Configure ingress**: Update the production ingress with your domain
+4. **Add secrets**: Implement proper secret management for production
+5. **CI/CD integration**: Integrate with Jenkins or GitLab CI for automated deployments
+6. **Horizontal Pod Autoscaling**: Configure HPA for automatic scaling based on load

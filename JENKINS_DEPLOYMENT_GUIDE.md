@@ -1,4 +1,17 @@
-# Jenkins Deployment Guide
+# Jenkins CI/CD Deployment Guide
+
+## 📋 Table of Contents
+
+- [Overview](#overview)
+- [Problem Resolution](#problem-resolution)
+- [Solution 1: Use Jenkinsfile (Recommended)](#solution-1-use-jenkinsfile-recommended)
+- [Solution 2: Use Windows Batch Script](#solution-2-use-windows-batch-script)
+- [Solution 3: Use PowerShell Script](#solution-3-use-powershell-script)
+- [Complete Setup Guide](#complete-setup-guide)
+- [Pipeline Configuration](#pipeline-configuration)
+- [Troubleshooting](#troubleshooting)
+
+## Overview
 
 This guide explains how to set up Jenkins for automated deployment of the Redis Pub/Sub application on Windows.
 
@@ -168,3 +181,40 @@ If you want to quickly fix your existing Jenkins job:
 - Use Jenkins credentials for sensitive data
 - Don't store secrets in build scripts
 - Use secure Docker registries for production images
+
+## Related Deployment Guides
+
+- **[Docker Deployment](DOCKER_DEPLOYMENT_GUIDE.md)** - For understanding the Docker containers that Jenkins deploys
+- **[Kubernetes Deployment](KUBERNETES_README.md)** - For Jenkins-based Kubernetes deployments and GitOps workflows
+- **[Main README](README.md)** - Overview and local development setup
+
+## Complete Jenkins Setup
+
+### 1. Install Jenkins Plugins
+Required plugins for this project:
+- **Git Plugin** - For repository integration
+- **Pipeline Plugin** - For pipeline support
+- **Docker Pipeline Plugin** - For Docker operations
+- **PowerShell Plugin** - For Windows PowerShell support
+
+### 2. Configure Jenkins Agent (if needed)
+For Windows agents:
+```groovy
+agent {
+    label 'windows'
+}
+```
+
+### 3. Environment Variables
+Set these in Jenkins system configuration:
+- `DOCKER_REGISTRY` - Your Docker registry URL
+- `KUBECONFIG` - Path to Kubernetes config (for K8s deployments)
+
+## Next Steps
+
+1. **Set up Webhooks**: Configure Git webhooks for automatic builds on code commits
+2. **Add Testing**: Integrate unit and integration tests in the pipeline
+3. **Deploy to Kubernetes**: Extend pipeline to deploy to Kubernetes clusters
+4. **Add Notifications**: Configure Slack/email notifications for build status
+5. **Security Scanning**: Add security scanning steps (SAST/DAST)
+6. **Artifact Management**: Store build artifacts in Jenkins or external repositories
