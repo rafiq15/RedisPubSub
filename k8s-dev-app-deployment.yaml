@@ -1,0 +1,67 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: redis-pubsub-app-deployment
+  namespace: redis-pubsub-dev
+  labels:
+    app: redis-pubsub-app
+    component: application
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: redis-pubsub-app
+      component: application
+  template:
+    metadata:
+      labels:
+        app: redis-pubsub-app
+        component: application
+    spec:
+      containers:
+      - name: redis-pubsub-app
+        image: redispubsub-redis-pubsub-app:latest
+        imagePullPolicy: Never  # Use Never for kind cluster to use local image
+        ports:
+        - containerPort: 8445
+          name: http-port
+        envFrom:
+        - configMapRef:
+            name: redis-pubsub-config
+        livenessProbe:
+          httpGet:
+            path: /actuator/health
+            port: 8445
+          initialDelaySeconds: 30
+          periodSeconds: 10
+          timeoutSeconds: 5
+          failureThreshold: 3
+        readinessProbe:
+          httpGet:
+            path: /actuator/health
+            port: 8445
+          initialDelaySeconds: 10
+          periodSeconds: 5
+          timeoutSeconds: 3
+          failureThreshold: 3
+        resources:
+          requests:
+            memory: "256Mi"
+            cpu: "200m"
+          limits:
+            memory: "512Mi"
+            cpu: "500m"
+      restartPolicy: Always
+      # Wait for Redis to be ready
+      initContainers:
+      - name: wait-for-redis
+        image: busybox:1.35
+        command: ['sh', '-c']
+        args:
+        - |
+          echo "Waiting for Redis to be ready..."
+          until nc -z redis-service 6379; do
+            echo "Redis not ready, waiting..."
+            sleep 2
+          done
+          echo "Redis is ready!"

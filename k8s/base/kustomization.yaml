@@ -1,0 +1,37 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+metadata:
+  name: redis-pubsub-base
+
+# Common labels applied to all resources
+commonLabels:
+  app.kubernetes.io/name: redis-pubsub
+  app.kubernetes.io/version: "1.0.0"
+  app.kubernetes.io/component: application
+
+# Resources to include
+resources:
+- namespace.yaml
+- configmap.yaml
+- redis-pvc.yaml
+- redis-deployment.yaml
+- redis-service.yaml
+- app-deployment.yaml
+- app-service.yaml
+- ingress.yaml
+
+# Images to be used (can be overridden in overlays)
+images:
+- name: redispubsub-redis-pubsub-app
+  newTag: latest
+
+# ConfigMap generator for additional config
+configMapGenerator:
+- name: app-properties
+  namespace: redis-pubsub
+  files:
+  - application-kubernetes.properties
+
+generatorOptions:
+  disableNameSuffixHash: true

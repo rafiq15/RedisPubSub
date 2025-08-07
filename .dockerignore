@@ -1,0 +1,32 @@
+# Git
+.git
+.gitignore
+
+# Build outputs
+build/
+target/
+*.jar
+*.war
+
+# IDE files
+.idea/
+.vscode/
+*.iml
+*.ipr
+*.iws
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# Documentation
+*.md
+HELP.md
+
+# Docker
+Dockerfile
+docker-compose.yml
+.dockerignore

@@ -1,0 +1,17 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: redis-pubsub-ingress
+  namespace: redis-pubsub-dev
+spec:
+  rules:
+  - host: redis-pubsub-dev.local
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: redis-pubsub-app-service
+            port:
+              number: 8445

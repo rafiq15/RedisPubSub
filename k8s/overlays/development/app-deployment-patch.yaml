@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: redis-pubsub-app-deployment
+  namespace: redis-pubsub-dev
+spec:
+  template:
+    spec:
+      containers:
+      - name: redis-pubsub-app
+        resources:
+          requests:
+            memory: "128Mi"
+            cpu: "100m"
+          limits:
+            memory: "512Mi"
+            cpu: "500m"
+        env:
+        - name: SPRING_PROFILES_ACTIVE
+          value: "kubernetes,development"
+        - name: LOGGING_LEVEL_ROOT
+          value: "DEBUG"

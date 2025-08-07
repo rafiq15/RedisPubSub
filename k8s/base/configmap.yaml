@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: redis-pubsub-config
+  namespace: redis-pubsub
+  labels:
+    app: redis-pubsub
+data:
+  # Application configuration
+  SPRING_REDIS_HOST: "redis-service"
+  SPRING_REDIS_PORT: "6379"
+  SERVER_PORT: "8445"
+  SPRING_PROFILES_ACTIVE: "kubernetes"
+  LOGGING_LEVEL_ROOT: "INFO"
+  LOGGING_LEVEL_COM_REDIS: "DEBUG"
+  LOGGING_LEVEL_ORG_SPRINGFRAMEWORK_DATA_REDIS: "DEBUG"
+  # Redis configuration
+  REDIS_MAX_MEMORY: "256mb"
+  REDIS_MAX_MEMORY_POLICY: "allkeys-lru"

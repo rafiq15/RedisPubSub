@@ -1,0 +1,24 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: redis-pubsub-app-deployment
+  namespace: redis-pubsub-prod
+spec:
+  template:
+    spec:
+      containers:
+      - name: redis-pubsub-app
+        resources:
+          requests:
+            memory: "512Mi"
+            cpu: "300m"
+          limits:
+            memory: "2Gi"
+            cpu: "1500m"
+        env:
+        - name: SPRING_PROFILES_ACTIVE
+          value: "kubernetes,production"
+        - name: LOGGING_LEVEL_ROOT
+          value: "WARN"
+        - name: JAVA_OPTS
+          value: "-Xms512m -Xmx1536m -XX:+UseG1GC -XX:+UseStringDeduplication"

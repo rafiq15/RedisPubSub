@@ -1,0 +1,45 @@
+version: '3.8'
+
+services:
+  redis:
+    image: redis:7-alpine
+    container_name: redis-server
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis-data:/data
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    networks:
+      - redis-network
+
+  redis-pubsub-app:
+    build: .
+    container_name: redis-pubsub-app
+    ports:
+      - "8445:8445"
+    environment:
+      - SPRING_REDIS_HOST=redis
+      - SPRING_REDIS_PORT=6379
+      - SERVER_PORT=8445
+      - SPRING_PROFILES_ACTIVE=default
+      - LOGGING_LEVEL_ROOT=INFO
+      - LOGGING_LEVEL_COM_REDIS=DEBUG
+      - LOGGING_LEVEL_ORG_SPRINGFRAMEWORK_DATA_REDIS=DEBUG
+    depends_on:
+      redis:
+        condition: service_healthy
+    restart: unless-stopped
+    networks:
+      - redis-network
+
+volumes:
+  redis-data:
+
+networks:
+  redis-network:
+    driver: bridge

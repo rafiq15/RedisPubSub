@@ -1,0 +1,36 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+metadata:
+  name: redis-pubsub-production
+
+# Base configuration
+resources:
+- ../../base
+
+# Production-specific labels
+commonLabels:
+  environment: production
+  app.kubernetes.io/instance: redis-pubsub-prod
+
+# Namespace override for production
+namespace: redis-pubsub-prod
+
+# Production-specific patches
+patchesStrategicMerge:
+- app-deployment-patch.yaml
+- configmap-patch.yaml
+- ingress-patch.yaml
+- redis-deployment-patch.yaml
+
+# Production images (use specific version tags)
+images:
+- name: redispubsub-redis-pubsub-app
+  newTag: "1.0.0"
+
+# Production-specific replicas for high availability
+replicas:
+- name: redis-pubsub-app-deployment
+  count: 3
+- name: redis-deployment
+  count: 1  # Redis typically runs as single instance or with Redis Cluster
